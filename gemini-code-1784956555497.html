@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday!</title>
+  <style>
+    :root {
+      --bg-color: #fff4f6;
+      --card-bg: #ffffff;
+      --primary-color: #ff6b81;
+      --text-color: #4a4a4a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Floating Heart Background */
+    .bg-heart {
+      position: absolute;
+      color: rgba(255, 182, 193, 0.4);
+      font-size: 20px;
+      animation: floatUp 8s linear infinite;
+      user-select: none;
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
+      20% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 90%;
+      max-width: 500px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(255, 182, 193, 0.5);
+      text-align: center;
+    }
+
+    .step {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 16px;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 10px 5px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+    }
+
+    button.secondary {
+      background-color: #e0e0e0;
+      color: #555;
+      box-shadow: none;
+    }
+
+    /* Step 1 Illustration */
+    .cute-illustration {
+      font-size: 80px;
+      margin: 20px 0;
+    }
+
+    /* Step 2 Balloons */
+    .balloon-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .balloon {
+      font-size: 50px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      user-select: none;
+    }
+
+    .balloon:hover {
+      transform: scale(1.1);
+    }
+
+    .balloon.popped {
+      visibility: hidden;
+    }
+
+    .revealed-text {
+      font-size: 24px;
+      color: var(--primary-color);
+      font-weight: bold;
+      min-height: 40px;
+      margin: 15px 0;
+    }
+
+    /* Step 3 Cake & Candle */
+    .cake-container {
+      margin: 30px auto;
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+    }
+
+    .cake {
+      font-size: 100px;
+      line-height: 1;
+    }
+
+    .candle-flame {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      animation: flicker 0.6s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; transform: translateX(-50%) scale(1); }
+      100% { opacity: 0.7; transform: translateX(-50%) scale(0.9); }
+    }
+
+    /* Step 4 Bouquet & Bubbles */
+    .bouquet-area {
+      position: relative;
+      padding: 20px 0;
+    }
+
+    .bouquet-img {
+      font-size: 100px;
+    }
+
+    .thought-bubble {
+      position: absolute;
+      background: #fff;
+      border: 1px solid #ffd1dc;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .tb1 { top: 0; left: 0; }
+    .tb2 { top: 10px; right: 0; }
+    .tb3 { bottom: 20px; left: -10px; }
+    .tb4 { bottom: 30px; right: -10px; }
+
+    /* Step 5 Photo Card Flip */
+    .card-flipper {
+      perspective: 1000px;
+      width: 220px;
+      height: 280px;
+      margin: 20px auto;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border-radius: 15px;
+    }
+
+    .card-flipper.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      padding: 15px;
+      background: #fff;
+      border: 8px solid #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-front img, .card-back img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      background: #fff0f3;
+    }
+
+    .card-caption {
+      margin-top: 10px;
+      font-weight: 600;
+      color: #666;
+    }
+
+    /* Step 6 Letter Envelope */
+    .envelope {
+      width: 200px;
+      height: 130px;
+      background-color: #f7d692;
+      margin: 30px auto;
+      position: relative;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .envelope::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-top: 65px solid #e0c07b;
+    }
+
+    .envelope-heart {
+      position: relative;
+      z-index: 2;
+      font-size: 24px;
+    }
+
+    .letter-paper {
+      display: none;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.6;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin: 20px 0;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    /* Confetti Canvas */
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti"></canvas>
+
+  <!-- Background Hearts -->
+  <div id="heart-bg"></div>
+
+  <div class="container">
+
+    <!-- STEP 1: Intro -->
+    <div class="step active" id="step-1">
+      <h1>Happy Birthday, Nina! 🎈</h1>
+      <div class="cute-illustration">🧸✨🐱</div>
+      <p style="margin-bottom: 20px;">Are you excited for your birthday surprise?</p>
+      <button onclick="nextStep(2)">Yes!</button>
+      <button class="secondary" onclick="alert('Wrong answer! Try again 😄')">No</button>
+    </div>
+
+    <!-- STEP 2: Pop Balloons -->
+    <div class="step" id="step-2">
+      <h2>Pop all 4 balloons 🎈</h2>
+      <div class="revealed-text" id="balloon-text"></div>
+      <div class="balloon-grid">
+        <div class="balloon" onclick="popBalloon(this, 'You')">🎈</div>
+        <div class="balloon" onclick="popBalloon(this, 'are')">🎈</div>
+        <div class="balloon" onclick="popBalloon(this, 'so')">🎈</div>
+        <div class="balloon" onclick="popBalloon(this, 'Amazing! ❤️')">🎈</div>
+      </div>
+      <button id="step2-btn" style="display:none;" onclick="nextStep(3)">Continue ✨</button>
+    </div>
+
+    <!-- STEP 3: Candle Wish -->
+    <div class="step" id="step-3">
+      <h2>Blow the candle 🎂</h2>
+      <p style="color: #888;">Close your eyes & make a wish</p>
+      <div class="cake-container" onclick="blowCandle()">
+        <div class="candle-flame" id="flame">🔥</div>
+        <div class="cake">🎂</div>
+      </div>
+      <p id="cake-instruction">Tap the cake to blow out the candle!</p>
+      <button id="step3-btn" style="display:none;" onclick="nextStep(4)">Next Surprise 🎁</button>
+    </div>
+
+    <!-- STEP 4: Bouquet -->
+    <div class="step" id="step-4">
+      <h2>Your Rose Bouquet 💐</h2>
+      <div class="bouquet-area">
+        <div class="thought-bubble tb1">Best Sister 💕</div>
+        <div class="thought-bubble tb2">You make  world beautiful 🌸</div>
+        <div class="thought-bubble tb3">So lucky to have you 🥰</div>
+        <div class="thought-bubble tb4">My favorite Sister ✨</div>
+        <div class="bouquet-img">💐</div>
+      </div>
+      <button onclick="nextStep(5)">Continue 💕</button>
+    </div>
+
+    <!-- STEP 5: Photo Memories -->
+    <div class="step" id="step-5">
+      <h2>Some Sweet Moments 📸</h2>
+      <p style="font-size: 12px; color: #888;">(Tap the card to flip)</p>
+      <div class="card-flipper" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+          <div class="card-front">
+            <img src="pic1.jpeg" alt="Memory Back">
+            <div class="card-caption">Happy Birthday! 🥂</div>
+          </div>
+          <div class="card-back">
+            <img src="pic2.jpeg" alt="Memory Back">
+            <div class="card-caption">Celebrating You ✨</div>
+          </div>
+        </div>
+        
+      </div>
+      <button onclick="nextStep(6)">Continue ❤️</button>
+    </div>
+
+    <!-- STEP 6: Heartfelt Letter -->
+    <div class="step" id="step-6">
+      <h2>A Message From My Heart ✉️</h2>
+      <p style="font-size: 12px; color: #888;" id="env-hint">Tap the envelope to open</p>
+      
+      <div class="envelope" id="envelope" onclick="openLetter()">
+        <div class="envelope-heart">💌</div>
+      </div>
+
+      <div class="letter-paper" id="letter">
+        <p><strong>Dear Nina,</strong></p><br>
+        <p>Happy Birthday to someone truly special! 💖</p><br>
+      
+        <p>On your special day, I wish you all the happiness, love, and joy that you deserve. May this year bring you countless beautiful moments and wonderful memories.</p><br>
+        <p>Here's to celebrating you today and always! ✨</p><br>
+        <p style="text-align: right;"><strong>With love, ❤️</strong></p>
+      </div>
+
+      <button id="step6-btn" style="display:none;" onclick="nextStep(7)">One last surprise ✨</button>
+    </div>
+
+    <!-- STEP 7: Final Screen -->
+    <div class="step" id="step-7">
+      <div style="font-size: 60px; margin-bottom: 10px;">🧸❤️🐻</div>
+      <h2>Lots of love for you 💕</h2>
+      <p>Once again, Happy Birthday Nina!<br>Hope you loved your surprise.</p>
+      <br>
+      <button onclick="location.reload()">🔄 Replay</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Create Background Hearts
+    const bgContainer = document.getElementById('heart-bg');
+    for (let i = 0; i < 15; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'bg-heart';
+      heart.innerHTML = '💗';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      heart.style.animationDelay = (Math.random() * 5) + 's';
+      bgContainer.appendChild(heart);
+    }
+
+    // Step Navigation
+    function nextStep(stepNumber) {
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.getElementById(`step-${stepNumber}`).classList.add('active');
+      
+      if (stepNumber === 7) {
+        triggerConfetti();
+      }
+    }
+
+    // Step 2: Balloon Pop
+    let poppedCount = 0;
+    let textArr = [];
+    function popBalloon(element, text) {
+      if (!element.classList.contains('popped')) {
+        element.classList.add('popped');
+        textArr.push(text);
+        document.getElementById('balloon-text').innerText = textArr.join(' ');
+        poppedCount++;
+        
+        if (poppedCount === 4) {
+          document.getElementById('step2-btn').style.display = 'inline-block';
+        }
+      }
+    }
+
+    // Step 3: Blow Candle
+    function blowCandle() {
+      const flame = document.getElementById('flame');
+      if (flame.style.display !== 'none') {
+        flame.style.display = 'none';
+        document.getElementById('cake-instruction').innerText = 'Make a wish come true! ✨';
+        document.getElementById('step3-btn').style.display = 'inline-block';
+        triggerConfetti();
+      }
+    }
+
+    // Step 6: Open Letter
+    function openLetter() {
+      document.getElementById('envelope').style.display = 'none';
+      document.getElementById('env-hint').style.display = 'none';
+      document.getElementById('letter').style.display = 'block';
+      document.getElementById('step6-btn').style.display = 'inline-block';
+    }
+
+    // Canvas Confetti Effect
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#ff6b81', '#ffb6c1', '#ffd1dc', '#fff', '#ffda79'];
+
+      for (let i = 0; i < 100; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 10 + 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speed: Math.random() * 3 + 2,
+          rotation: Math.random() * 360
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.y += p.speed;
+          p.rotation += 2;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        if (pieces.some(p => p.y < canvas.height)) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    }
+  </script>
+</body>
+</html>
